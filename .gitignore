@@ -1,0 +1,36 @@
+# ---- Ghost runtime（运行数据，绝不提交）----
+runtime/content/data/
+runtime/content/logs/
+runtime/content/images/
+runtime/content/adapters/
+runtime/content/public/
+runtime/content/settings/
+runtime/.ghost-cli
+runtime/config.development.json
+runtime/config.production.json
+runtime/versions/
+
+# ---- 密钥与配置 ----
+.env
+.env.local
+*.pem
+*.key
+
+# ---- 数据库 ----
+*.sqlite
+*.sqlite3
+*.db
+
+# ---- 依赖与构建产物 ----
+node_modules/
+dist/
+build/
+*.zip
+*.tar.gz
+
+# ---- 系统与编辑器 ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
