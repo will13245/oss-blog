@@ -1,0 +1,20 @@
+{{!< default}}
+
+<section class="hero">
+    <h1 class="hero__title">{{@site.title}}</h1>
+    {{#if @site.description}}
+        <p class="hero__description">{{@site.description}}</p>
+    {{/if}}
+</section>
+
+<section class="post-list" aria-label="文章列表">
+    {{#foreach posts}}
+        {{> post-card}}
+    {{else}}
+        <div class="empty-state">
+            <p>还没有发布的文章，去管理端写第一篇吧。</p>
+        </div>
+    {{/foreach}}
+</section>
+
+{{pagination}}

@@ -1,0 +1,26 @@
+{
+  "name": "oss-blog-theme",
+  "description": "自定义 Ghost 主题：瑞维的开源博客。在 Ghost 基线上做二次开发的展示层，包含导航、文章卡片、详情页、标签页与评论。",
+  "version": "1.0.0",
+  "keywords": ["ghost-theme"],
+  "engines": {
+    "ghost": ">=5.0.0"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "瑞维",
+    "email": "admin@oss-blog.local"
+  },
+  "config": {
+    "posts_per_page": 8,
+    "image_sizes": {
+      "xs": { "width": 150 },
+      "s": { "width": 300 },
+      "m": { "width": 600 },
+      "l": { "width": 1000 },
+      "xl": { "width": 2000 }
+    },
+    "card_assets": true,
+    "custom_fonts": true
+  }
+}

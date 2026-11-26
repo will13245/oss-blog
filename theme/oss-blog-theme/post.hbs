@@ -1,0 +1,53 @@
+{{!< default}}
+
+{{#post}}
+<article class="post-full">
+    <header class="post-full__header">
+        <h1 class="post-full__title">{{title}}</h1>
+        <div class="post-full__meta">
+            {{#foreach authors}}
+                <span class="post-full__author">{{name}}</span>
+            {{/foreach}}
+            <time datetime="{{date published_at format="YYYY-MM-DD"}}">{{date published_at format="YYYY 年 MM 月 DD 日"}}</time>
+            <span>{{reading_time seconds="阅读需要 %秒" minute="阅读需要 1 分钟" minutes="阅读需要 % 分钟"}}</span>
+        </div>
+        {{#if tags}}
+            <div class="post-full__tags">
+                {{#foreach tags}}
+                    <a class="tag-pill" href="{{url}}">{{name}}</a>
+                {{/foreach}}
+            </div>
+        {{/if}}
+    </header>
+
+    {{#if feature_image}}
+        <figure class="post-full__image">
+            <img src="{{img_url feature_image size="l"}}" alt="{{title}}">
+        </figure>
+    {{/if}}
+
+    <section class="post-full__content">
+        {{content}}
+    </section>
+
+    <footer class="post-full__footer">
+        {{#prev_post}}
+            <a class="post-nav post-nav--prev" href="{{url}}">
+                <span class="post-nav__label">上一篇</span>
+                <span class="post-nav__title">{{title}}</span>
+            </a>
+        {{/prev_post}}
+        {{#next_post}}
+            <a class="post-nav post-nav--next" href="{{url}}">
+                <span class="post-nav__label">下一篇</span>
+                <span class="post-nav__title">{{title}}</span>
+            </a>
+        {{/next_post}}
+    </footer>
+</article>
+
+<section class="comments-wrap" aria-label="评论区">
+    {{comments}}
+</section>
+{{/post}}
+

@@ -1,0 +1,22 @@
+{{!< default}}
+
+<section class="tag-header">
+    <p class="tag-header__label">标签</p>
+    <h1 class="tag-header__title">{{tag.name}}</h1>
+    {{#if tag.description}}
+        <p class="tag-header__description">{{tag.description}}</p>
+    {{/if}}
+    <p class="tag-header__count">{{pagination.total}} 篇文章</p>
+</section>
+
+<section class="post-list" aria-label="{{tag.name}} 的文章列表">
+    {{#foreach posts}}
+        {{> post-card}}
+    {{else}}
+        <div class="empty-state">
+            <p>这个标签下还没有文章。</p>
+        </div>
+    {{/foreach}}
+</section>
+
+{{pagination}}

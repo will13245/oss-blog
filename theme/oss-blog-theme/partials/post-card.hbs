@@ -1,0 +1,29 @@
+<article class="post-card">
+    <a class="post-card__link" href="{{url}}">
+        {{#if feature_image}}
+            <img class="post-card__image" src="{{img_url feature_image size="m"}}" alt="{{title}}">
+        {{else}}
+            <div class="post-card__image post-card__image--placeholder" aria-hidden="true">{{title}}</div>
+        {{/if}}
+        <div class="post-card__body">
+            <div class="post-card__meta">
+                <time datetime="{{date published_at format="YYYY-MM-DD"}}">{{date published_at format="YYYY 年 MM 月 DD 日"}}</time>
+                <span aria-hidden="true">·</span>
+                <span>{{reading_time seconds="阅读需要 %秒" minute="阅读需要 1 分钟" minutes="阅读需要 % 分钟"}}</span>
+            </div>
+            <h2 class="post-card__title">{{title}}</h2>
+            {{#if custom_excerpt}}
+                <p class="post-card__excerpt">{{custom_excerpt}}</p>
+            {{else}}
+                <p class="post-card__excerpt">{{excerpt words="36"}}</p>
+            {{/if}}
+            {{#if tags}}
+                <div class="post-card__tags">
+                    {{#foreach tags}}
+                        <span class="tag-pill tag-pill--{{slug}}">{{name}}</span>
+                    {{/foreach}}
+                </div>
+            {{/if}}
+        </div>
+    </a>
+</article>

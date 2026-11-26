@@ -1,0 +1,14 @@
+<article class="related-card">
+    <a class="related-card__link" href="{{url}}">
+        <div class="related-card__meta">
+            {{reading_time seconds="约 %秒读完" minute="约 1 分钟读完" minutes="约 % 分钟读完"}}
+            {{#if tags.[0]}}
+                · {{tags.[0].name}}
+            {{/if}}
+        </div>
+        <h3 class="related-card__title">{{title}}</h3>
+        {{#if custom_excerpt}}
+            <p class="related-card__excerpt">{{custom_excerpt}}</p>
+        {{/if}}
+    </a>
+</article>
