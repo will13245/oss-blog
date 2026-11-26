@@ -15,3 +15,6 @@ Thumbs.db
 
 # npm 缓存产物
 *.npm-cache/
+
+# 主题打包产物（由 npm/Compress-Archive 生成，不入库）
+*.zip
