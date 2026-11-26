@@ -1,10 +1,11 @@
 /**
  * oss-blog-theme 本地全文搜索（自主功能）
  *
- * - 数据源：Ghost Content API（公开只读 key，经 {{@custom.contentApiKey}} 注入）
+ * - 数据源：Ghost Content API（公开只读 key，经 {{@custom.content_api_key}} 注入）
  * - 索引：浏览器内存索引（标题/摘要/正文纯文本/标签），断网可用
  * - 高亮：命中片段 <mark> 标记
  * - 无结果：标签建议 + 重试提示
+ * - 索引同时暴露 window.__ossBlogIndex 供相关推荐（related-posts.js）复用
  */
 (function () {
   'use strict';
@@ -19,6 +20,31 @@
 
   var cache = null;        // 内存索引缓存
   var lastFocus = null;
+
+  // 中文阅读时长估算：中文 400 字/分钟，英文 200 词/分钟，每张图 12 秒
+  function readingMinutes(html) {
+    var text = String(html || '').replace(/<[^>]*>/g, ' ');
+    var cnChars = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+    var enWords = (text.match(/[a-zA-Z]+/g) || []).length;
+    var images = (String(html || '').match(/<img\s/g) || []).length;
+    var minutes = cnChars / 400 + enWords / 200 + images * 12 / 60;
+    return Math.max(1, Math.round(minutes));
+  }
+
+  function buildEntry(p) {
+    var tags = (p.tags || []).map(function (t) { return { name: t.name, slug: t.slug }; });
+    var minutes = p.reading_time || readingMinutes(p.html);
+    return {
+      id: p.id,
+      title: p.title,
+      url: p.url,
+      excerpt: p.custom_excerpt || p.excerpt || '',
+      text: (p.html || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 8000),
+      tags: tags,
+      minutes: minutes,
+      haystack: [p.title, p.custom_excerpt || p.excerpt || '', (p.html || '').replace(/<[^>]*>/g, ' '), tags.map(function (t) { return t.name; }).join(' ')].join('\n').toLowerCase(),
+    };
+  }
 
   function escapeHtml(s) {
     return String(s || '').replace(/[&<>"']/g, function (c) {
@@ -47,27 +73,23 @@
   function fetchIndex() {
     if (cache) return Promise.resolve(cache);
     if (!KEY) {
-      return Promise.reject(new Error('Content API key 未配置（请在管理端站点设置填写 contentApiKey）'));
+      return Promise.reject(new Error('Content API key 未配置（请在管理端站点设置填写 content_api_key）'));
     }
-    var url = '/ghost/api/content/posts/?key=' + encodeURIComponent(KEY)
-      + '&limit=all&fields=title,custom_excerpt,excerpt,url,published_at,tags&formats=plaintext';
+    var url = '/ghost/api/content/posts/?key=' + encodeURIComponent(KEY) + '&limit=all&include=tags';
     return fetch(url)
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function (d) {
-        cache = (d.posts || []).map(function (p) {
-          var tags = (p.tags || []).map(function (t) { return t.name; });
-          return {
-            title: p.title,
-            url: p.url,
-            excerpt: p.custom_excerpt || p.excerpt || '',
-            text: (p.plaintext || '').slice(0, 8000),   // 索引正文前 8000 字，避免大文章拖慢
-            tags: tags,
-            haystack: [p.title, p.custom_excerpt || p.excerpt || '', p.plaintext || '', tags.join(' ')].join('\n').toLowerCase(),
-          };
-        });
+        cache = (d.posts || []).map(buildEntry);
+        window.__ossBlogIndex = cache;
+        window.__ossBlogIndexPromise = Promise.resolve(cache);
+        document.dispatchEvent(new CustomEvent('oss-blog:index-ready'));
         return cache;
       });
   }
+
+  // 页面加载即构建索引（相关推荐依赖），搜索弹层复用同一 Promise
+  window.__ossBlogIndexPromise = fetchIndex();
+  window.__ossBlogIndexPromise.catch(function () { /* key 缺失或网络失败时静默，UI 已有降级 */ });
 
   function search(q) {
     var tokens = tokenize(q);
@@ -133,7 +155,7 @@
     panel.hidden = false;
     toggle.setAttribute('aria-expanded', 'true');
     input.focus();
-    fetchIndex().catch(function (e) {
+    window.__ossBlogIndexPromise.catch(function (e) {
       results.innerHTML = '<div class="search-empty"><p>搜索数据加载失败：' + escapeHtml(e.message) + '</p></div>';
     });
   }

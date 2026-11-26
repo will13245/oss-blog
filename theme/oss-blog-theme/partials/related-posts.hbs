@@ -1,15 +1,26 @@
-// 自主功能：相关推荐（共享标签 + 阅读时长）
+{{! 自主功能（ISSUE-2）：按共享标签 + 阅读时长的相关推荐 }}
 {{#if post.tags}}
     <section class="related-posts" aria-label="相关文章推荐">
         <h2 class="related-posts__heading">相关推荐</h2>
         <div class="related-posts__list">
-            {{#get "posts" filter="tags:[{{post.tags}}]+id:-{{post.id}}" limit="3" as |related|}}
+            {{! 服务端兜底：Ghost 内部 get 序列化不含阅读时长，JS 可用时由 related-posts.js 重渲染（含阅读时长） }}
+            {{#get "posts" filter="tags:[{{post.tags}}]+id:-{{post.id}}" limit="3" include="tags" as |related|}}
                 {{#foreach related}}
-                    {{> related-card}}
+                    <article class="related-card">
+                        <a class="related-card__link" href="{{url}}">
+                            {{#if tags.[0]}}
+                                <div class="related-card__meta">{{tags.[0].name}}</div>
+                            {{/if}}
+                            <h3 class="related-card__title">{{title}}</h3>
+                        </a>
+                    </article>
                 {{else}}
                     <p class="related-posts__empty">暂时没有同标签的其他文章。</p>
                 {{/foreach}}
             {{/get}}
         </div>
     </section>
+
+    {{! 客户端增强标记：JS 建好索引后重渲染为含阅读时长的卡片 }}
+    <script type="application/json" data-related-posts data-post-id="{{post.id}}" data-post-tags="{{#foreach post.tags}}{{slug}}{{#unless @last}},{{/unless}}{{/foreach}}"></script>
 {{/if}}
