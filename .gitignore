@@ -1,0 +1,17 @@
+# Ghost 运行目录（数据库、日志、密钥、上传内容均不入库）
+runtime/
+
+# 依赖
+node_modules/
+
+# 本地环境变量（真实值不入库，只提交 .env.example）
+.env
+
+# 系统与编辑器杂项
+Thumbs.db
+.DS_Store
+*.log
+.vscode/
+
+# npm 缓存产物
+*.npm-cache/
