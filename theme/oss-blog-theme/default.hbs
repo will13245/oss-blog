@@ -19,7 +19,7 @@
             <nav class="site-nav" aria-label="主导航">
                 {{navigation}}
             </nav>
-            <button id="search-toggle" class="search-toggle" type="button" aria-label="搜索文章" aria-expanded="false">
+            <button id="search-toggle" class="search-toggle" type="button" aria-label="搜索文章" aria-expanded="false" data-content-key="{{@custom.content_api_key}}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
                 <span>搜索</span>
             </button>
@@ -39,6 +39,8 @@
 
     {{> search-panel}}
     <script src="{{asset "js/blog.js"}}" defer></script>
+    {{! 自主功能（ISSUE-1）：本地全文搜索，key 为公开只读 Content API key }}
+    <script src="{{asset "js/blog-search.js"}}" defer></script>
     {{ghost_foot}}
 </body>
 </html>

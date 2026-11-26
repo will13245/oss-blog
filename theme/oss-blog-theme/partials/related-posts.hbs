@@ -1,0 +1,15 @@
+// 自主功能：相关推荐（共享标签 + 阅读时长）
+{{#if post.tags}}
+    <section class="related-posts" aria-label="相关文章推荐">
+        <h2 class="related-posts__heading">相关推荐</h2>
+        <div class="related-posts__list">
+            {{#get "posts" filter="tags:[{{post.tags}}]+id:-{{post.id}}" limit="3" as |related|}}
+                {{#foreach related}}
+                    {{> related-card}}
+                {{else}}
+                    <p class="related-posts__empty">暂时没有同标签的其他文章。</p>
+                {{/foreach}}
+            {{/get}}
+        </div>
+    </section>
+{{/if}}

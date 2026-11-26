@@ -21,6 +21,13 @@
       "xl": { "width": 2000 }
     },
     "card_assets": true,
-    "custom_fonts": true
+    "custom_fonts": true,
+    "custom": {
+      "content_api_key": {
+        "type": "text",
+        "group": "site",
+        "description": "Content API 公开只读密钥，供前台本地全文搜索拉取文章数据"
+      }
+    }
   }
 }
